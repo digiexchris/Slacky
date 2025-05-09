@@ -8,7 +8,7 @@ export default class Main {
   private static onWindowAllClosed() {
     if (process.platform !== 'darwin')
       Main.application.quit()
-    
+
   }
 
   private static onClose() {
@@ -18,7 +18,7 @@ export default class Main {
 
   private static onReady() {
     const SLACK_APP_URL = 'https://app.slack.com/client'
-  
+
     Main.mainWindow = new BrowserWindow({
       roundedCorners: true,
       width: 1920,
@@ -30,24 +30,22 @@ export default class Main {
         nodeIntegration: true
       }
     })
-  
+
     /**
      * Open links in the default browser
      */
-    Main.mainWindow.webContents.setWindowOpenHandler(({url}) => {
+    Main.mainWindow.webContents.setWindowOpenHandler(({ url }) => {
       void shell.openExternal(url)
       // We need to return 'deny' in order to not open a new electron window
       // Works like e.preventDefault()
-      return {action: 'deny'}
+      return { action: 'deny' }
     })
-  
+
     Main.mainWindow.loadURL(SLACK_APP_URL, {
-      /**
-       * We have to emulate a supported Browser because arm64 + Electron is not supported by slack client app
-      */
-      userAgent: 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
+      // TODO: Fix this hacky way to get around Slack's user agent check
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/53/7.36 (KHTML, like Gecko) HeadlessChrome/135.0.7049.95 Safari/537.36'
     })
-   
+
     Main.mainWindow.on('closed', Main.onClose)
   }
 
