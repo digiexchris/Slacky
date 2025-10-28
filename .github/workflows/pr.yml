@@ -1,0 +1,48 @@
+name: Test Build
+
+on: 
+  pull_request:
+
+jobs:
+  test:
+    name: Test Build
+    runs-on: ubuntu-latest
+    container:
+      image: flathub-infra/flatpak-github-actions:freedesktop-23.08
+      options: --privileged
+    steps:
+      # - name: Install flatpak runtime
+      #   run: |
+      #     flatpak install --no-deps --arch aarch64 --assumeyes runtime/org.freedesktop.Platform/aarch64/25.08
+      #     flatpak install --no-deps --arch aarch64 --assumeyes runtime/org.freedesktop.Sdk/aarch64/25.08
+      #     flatpak install --no-deps --arch aarch64 --assumeyes org.electronjs.Electron2.BaseApp/aarch64/25.08
+
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Bun enviroment
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build App
+        run: bun run build
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          install-deps-from: flathub
+          bundle: slacky.flatpak
+          manifest-path: flatpak/com.andersonlaverde.slacky.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+          
+      - name: Upload Flatpak artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: slacky-flatpak-pr-${{ github.event.number }}
+          path: slacky.flatpak
