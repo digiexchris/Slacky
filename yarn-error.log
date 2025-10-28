@@ -1,0 +1,111 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarnpkg
+
+PATH: 
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Eclipse Foundation/jdk-8.0.302.8-hotspot/bin:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Perforce/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files/Ubisoft/SRM/Remedy/:/mnt/c/Program Files/Kubernetes/Minikube:/mnt/c/minikube:/mnt/c/Program Files/Neovim/bin:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/OpenJDK/jdk-17.0.2/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/:/mnt/c/Program Files/PowerShell/7/:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/IncrediBuild:/mnt/c/Users/cchatelain/scoop/shims:/mnt/c/Users/cchatelain/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/cchatelain/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files (x86)/Nmap:/mnt/c/Users/cchatelain/.dotnet/tools:/mnt/c/.nuget/dd/androidsdk.10.0.0.3/tools/SDK/platform-tools/:/mnt/c/Users/cchatelain/AppData/Local/Programs/Microsoft VS Code Insiders/bin:/mnt/c/Users/cchatelain/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0/LocalCache/local-packages/Python313/Scripts:/mnt/c/Program Files (x86)/Android/android-sdk/platform-tools:/snap/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.19.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/chris/Slacky/package.json: Unexpected token / in JSON at position 1925
+      at JSON.parse (<anonymous>)
+      at _callee11$ (/usr/share/nodejs/yarn/lib/util/fs.js:1172:49)
+      at tryCatch (/usr/share/nodejs/@babel/runtime/helpers/regeneratorRuntime.js:44:17)
+      at Generator.<anonymous> (/usr/share/nodejs/@babel/runtime/helpers/regeneratorRuntime.js:125:22)
+      at Generator.next (/usr/share/nodejs/@babel/runtime/helpers/regeneratorRuntime.js:69:21)
+      at asyncGeneratorStep (/usr/share/nodejs/@babel/runtime/helpers/asyncToGenerator.js:3:24)
+      at _next (/usr/share/nodejs/@babel/runtime/helpers/asyncToGenerator.js:22:9)
+
+npm manifest: 
+  {
+    "name": "slacky",
+    "version": "0.0.6",
+    "description": "Slack wrapper for Linux arm64 systems",
+    "main": "dist/app/src/app.js",
+    "scripts": {
+      "dist": "build --arm64 --linux"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/andirsun/slack-arm64.git"
+    },
+    "author": "Anderson Laverde <hola@andersonlaverde.com>",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/andirsun/slack-arm64/issues",
+      "email": "hola@andersonlaverde.com"
+    },
+    "build": {
+      "nodeGypRebuild": true,
+      "linux": {
+        "arch": [
+          "arm64",
+          "amd64"
+        ],
+        "target": [
+          "AppImage",
+          "flatpak",
+          "rpm",
+          "deb"
+        ],
+        "category": "Social",
+        "icon": "build/icons"
+      },
+      "flatpak": {
+        "base": "org.electronjs.Electron2.BaseApp",
+        "baseVersion": "24.08",
+        "branch": "master",
+        "id": "com.andersonlaverde.slacky",
+        "runtime": "org.freedesktop.Platform",
+        "runtimeVersion": "24.08",
+        "sdk": "org.freedesktop.Sdk",
+        "build-options": {
+          "append-path": "/usr/lib/sdk/node24/bin",
+          "env": {
+            "NPM_CONFIG_LOGLEVEL": "info"
+          }
+        },
+        "finishArgs": [
+          "--share=ipc",
+          "--socket=fallback-x11",
+          "--socket=wayland",
+          "--socket=pulseaudio",
+          "--share=network",
+          "--device=dri",
+          "--filesystem=xdg-download",
+          "--talk-name=org.freedesktop.Notifications",
+          "--talk-name=org.kde.StatusNotifierWatcher",
+          "--talk-name=com.canonical.Unity",
+          "--own-name=org.kde.StatusNotifierItem-*",
+          "--talk-name=com.canonical.AppMenu.Registrar",
+          "--env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icon"
+        ]
+      }
+    },
+    "homepage": "https://github.com/andirsun/Slacky",
+    "dependencies": {
+      "electron": "^35.2.0"
+    },
+    "devDependencies": {
+      "@swc/cli": "^0.7.3",
+      // "@swc/core-linux-arm64-gnu": "^1.11.21",
+      "@typescript-eslint/eslint-plugin": "^6.18.1",
+      "@typescript-eslint/parser": "^6.18.1",
+      "electron-builder": "^26.0.12",
+      "eslint": "^8.56.0",
+      "nodemon": "^3.0.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

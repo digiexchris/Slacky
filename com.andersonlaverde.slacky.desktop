@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Slacky
-Comment=Slack client for Linux
-Exec=slacky %U
-Icon=com.andersonlaverde.slacky
-Type=Application
-Categories=Network;InstantMessaging;
-StartupWMClass=slacky
-MimeType=x-scheme-handler/slack;

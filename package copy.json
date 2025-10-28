@@ -47,11 +47,12 @@
     "linux": {
       "target": [
         "AppImage",
+        "flatpak",
         "rpm",
         "deb"
       ],
       "category": "Social",
-      "icon": "icons"
+      "icon": "build/icons"
     },
     "directories": {
       "buildResources": "build",
@@ -61,9 +62,11 @@
       "dist"
     ],
     "flatpak": {
+      "base": "org.electronjs.Electron2.BaseApp",
+      "baseVersion": "24.08",
       "branch": "master",
       "runtime": "org.freedesktop.Platform",
-      "runtimeVersion": "25.08",
+      "runtimeVersion": "24.08",
       "sdk": "org.freedesktop.Sdk",
       "useWaylandFlags": true,
       "finishArgs": [

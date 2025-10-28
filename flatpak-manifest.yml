@@ -1,0 +1,57 @@
+app-id: com.andersonlaverde.slacky
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+# base: org.electronjs.Electron2.BaseApp
+base-version: 'stable'
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node24
+separate-locales: false
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=fallback-x11 #allow x11 fallback
+  - --socket=wayland #enable wayland by default
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --filesystem=xdg-download
+  # - --talk-name=org.freedesktop.Notifications
+  # - --talk-name=org.kde.StatusNotifierWatcher
+  # - --talk-name=com.canonical.Unity
+  # - --own-name=org.kde.StatusNotifierItem-*
+  # - --talk-name=com.canonical.AppMenu.Registrar
+  # - --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons #enable proper cursor scaling on HiDPI displays
+modules:
+  - name: slacky
+    buildsystem: simple
+    build-options:
+      arch:
+        aarch64:
+          env:
+            npm_config_target_arch: arm64 
+            npm_config_target_platform: linux
+            npm_config_target_arch_family: arm64
+    build-commands:
+      - |
+        echo Built by previous pipeline step!/n
+        # corepack enable
+        # corepack prepare yarn@stable --activate
+        # yarn install
+        # yarn app:dirarm
+        # chmod u+s /usr/bin/bwrap
+
+    subdir: ./
+    sources:
+      #- type: archive
+      #  url: https://github.com/flathub/electron-sample-app/archive/1.0.1.tar.gz
+      #  sha256: a2feb3f1cf002a2e4e8900f718cc5c54db4ad174e48bfcfbddcd588c7b716d5b
+      - type: dir
+        path: ./
+        dest: out
+      # - ../package-lock.json
+      # Wrapper to launch the app
+      # - type: script
+      #   dest-filename: run.sh
+      #   commands:
+      #     - zypak-wrapper.sh /app/main/slacky "$@"

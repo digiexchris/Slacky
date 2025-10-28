@@ -1,2 +1,4 @@
 - updated package versions to fix reported vulnerabilities from npm
-- added swc linux arm 64 as a dev dependency to avoid compiling it from source
+- added "@swc/core-linux-arm64-gnu": "^1.11.21" as a dev dependency to avoid compiling it from source
+- switched to yarn as a recommendation from electron and flatpak
+- update electron and freedesktop sdk

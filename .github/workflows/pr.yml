@@ -1,45 +1,75 @@
 name: Test Build
 
-on: 
-  pull_request:
+# on: 
+#   pull_request:
+on:
+  push:
 
 jobs:
-  test:
-    name: Test Build
-    runs-on: ubuntu-latest
+
+  flatpak-builder:
+    name: Flatpak Builder
+    # runs-on: ubuntu-24.04-arm
     container:
-      image: flathub-infra/flatpak-github-actions:freedesktop-23.08
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
       options: --privileged
+   
+    strategy:
+      fail-fast: true
+      matrix:
+        variant:
+          # - arch: x86_64
+          #   runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.variant.runner }}
     steps:
-      # - name: Install flatpak runtime
+      - uses: actions/checkout@v4
+
+      # - name: Install docker client
+      #   if: ${{ matrix.variant.arch != 'aarch64' }}
       #   run: |
-      #     flatpak install --no-deps --arch aarch64 --assumeyes runtime/org.freedesktop.Platform/aarch64/25.08
-      #     flatpak install --no-deps --arch aarch64 --assumeyes runtime/org.freedesktop.Sdk/aarch64/25.08
-      #     flatpak install --no-deps --arch aarch64 --assumeyes org.electronjs.Electron2.BaseApp/aarch64/25.08
-
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
+      #     # Use the static binaries because it's unable to use a package manager 
+      #     curl https://download.docker.com/linux/static/stable/x86_64/docker-26.0.0.tgz --output ./docker.tgz
+      #     tar xzvf docker.tgz
+      #     mv docker/* /usr/bin
+      # - name: Set up QEMU
+      #   if: ${{ matrix.variant.arch != 'aarch64' }}
+      #   uses: docker/setup-qemu-action@v3
+      #   with:
+      #     platforms: linux/aarch64
+      
+      - uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 24
+          architecture: 'arm64'
+          verbose: true
 
-      - name: Install Bun enviroment
-        uses: oven-sh/setup-bun@v1
+      - name: Install Deps
+        run: |
+          # flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          # flatpak install flathub org.freedesktop.Platform/aarch64/25.08 org.freedesktop.Sdk/aarch64/25.08 -y
+          corepack enable
+          corepack prepare yarn@stable --activate
+          yarn install --immutable
+          # chmod u+s /usr/bin/bwrap
 
-      - name: Install dependencies
-        run: bun install
-
-      - name: Build App
-        run: bun run build
+      # - name: Build Electron App
+      #   run: |
+      #     echo "c3e06eb9bf1c4392b834a89c95f82870" > /etc/machine-id
+      #     export DEBUG="@malept/flatpak-bundler"
+      #     yarn run app:dirarm
+        
 
       - name: Build Flatpak
-        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6.6
         with:
-          install-deps-from: flathub
+          arch: aarch64
           bundle: slacky.flatpak
-          manifest-path: flatpak/com.andersonlaverde.slacky.yml
-          cache-key: flatpak-builder-${{ github.sha }}
+          manifest-path: flatpak-manifest.yml
+          verbose: true
+          upload_artifact: false 
+          # cache-key: flatpak-builder-${{ github.sha }}
           
       - name: Upload Flatpak artifact
         uses: actions/upload-artifact@v4
