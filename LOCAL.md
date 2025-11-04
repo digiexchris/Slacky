@@ -54,7 +54,7 @@ act --container-architecture=linux/aarch64 --container-options "--privileged --c
 
 You can also build native packages for your host OS by calling yarn directly
 
-```
+``` #note: probably wrong, update later
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     flatpak install flathub org.freedesktop.Platform/aarch64/24.08 org.freedesktop.Sdk/aarch64/24.08 org.electronjs.Electron2.BaseApp/aarch64/stable -y
     corepack enable
@@ -64,3 +64,13 @@ You can also build native packages for your host OS by calling yarn directly
     yarn app:dir # builds, but doesn't pack
     yarn app:dist # builds and creates packages for your current arch/os (eg linux/amd64)
 ```
+
+
+
+# Updating Dependencies
+npm install
+pipx install flatpak-node-generator
+flatpak-node-generator npm ./package-lock.json
+npm run build
+
+

@@ -7,13 +7,13 @@
     "start": "electron .",
     "build": "swc src -d dist/app",
     "dev": "nodemon --watch src --ext ts --exec \"yarn run build && yarn run start\"",
-    "pack": "yarn build && USE_SYSTEM_FPM=1 electron-builder",
+    "pack": "npm run build && USE_SYSTEM_FPM=1 electron-builder",
     "publish": "USE_SYSTEM_FPM=1 electron-builder --publish always",
-    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
-    "app:dir": "yarn build && electron-builder --dir",
-    "app:dirarm": "yarn build && electron-builder --dir --linux --arm64",
-    "app:dist": "yarn build && DEBUG=\"@malept/flatpak-bundler\" electron-builder",
-    "app:distarm": "yarn build && electron-builder --linux --arm64"
+    "dist:dir": "npm run dist --dir -c.compression=store -c.mac.identity=null",
+    "app:dir": "npm run build && electron-builder --dir",
+    "app:dirarm": "npm run build && electron-builder --dir --linux --arm64",
+    "app:dist": "npm run build && DEBUG=\"@malept/flatpak-bundler\" electron-builder",
+    "app:distarm": "npm run build && electron-builder --linux --arm64"
   },
   "repository": {
     "type": "git",
@@ -39,7 +39,6 @@
     "electron-builder": "^26.0.20",
     "eslint": "^8.56.0"
   },
-  "postinstall": "electron-builder install-app-deps",
   "build": {
     "appId": "com.andersonlaverde.slacky",
     "productName": "Slacky",

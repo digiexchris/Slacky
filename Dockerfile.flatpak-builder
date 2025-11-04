@@ -1,0 +1,73 @@
+FROM node:24-bookworm
+
+# ARG NODE_VERSION=24
+
+# RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# install curl
+# RUN apt update && apt install curl -y
+# set env
+# ENV NVM_DIR=/root/.nvm
+# # install nvm
+# RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# RUN source $NVM_DIR/nvm.sh \
+#     && nvm install $NODE_VERSION \
+#     && nvm alias default $NODE_VERSION \
+#     && nvm use default && npm install -g yarn
+
+# # add node and npm to path so the commands are available
+# ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
+# ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# RUN touch /usr/local/share/.yarnrc && chmod 777 /usr/local/share/.yarnrc
+
+# # set ENTRYPOINT for reloading nvm-environment
+# ENTRYPOINT ["bash", "-c", "source $NVM_DIR/nvm.sh && exec \"$@\"", "--"]
+
+# set cmd to bash
+CMD ["/bin/bash"]
+
+# Architecture argument (aarch64 or x86_64)
+ARG FLATPAK_ARCH=x86_64
+
+# Install flatpak, flatpak-builder, and debugging tools
+RUN apt-get update && apt-get install -y \
+    flatpak \
+    flatpak-builder \
+    pipx \
+    git \
+    dnsutils \
+    curl \
+    wget \
+    vim \
+    net-tools \
+    dbus-x11 \
+    iputils-ping \
+    traceroute \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up machine-id for D-Bus
+# RUN echo 'c3e06eb9bf1c4392b834a89c95f82870' > /etc/machine-id
+
+# RUN corepack enable && corepack prepare yarn@latest --activate
+
+# Pre-install flatpak dependencies to speed up builds
+# This installs the Electron base app and Node24 extension for the target architecture
+RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && \
+    eval $(dbus-launch --sh-syntax) && \
+    export DBUS_SESSION_BUS_ADDRESS && \
+    flatpak install -y flathub \
+        org.freedesktop.Platform/${FLATPAK_ARCH}/25.08 \
+        org.freedesktop.Sdk/${FLATPAK_ARCH}/25.08 \
+        org.electronjs.Electron2.BaseApp/${FLATPAK_ARCH}/25.08 \
+        org.freedesktop.Sdk.Extension.node24/${FLATPAK_ARCH}/25.08 \
+    || echo "Flatpak dependencies installation attempted"
+
+ENV PATH="./node_modules/.bin:/usr/local/bin:/usr/local/lib/node_modules/:~/.local/bin:$PATH"
+
+RUN pipx install flatpak-node-generator
+
+COPY flatpak-entrypoint.sh /bin/flatpak-entrypoint
+RUN chmod +x /bin/flatpak-entrypoint
+ENTRYPOINT ["/bin/flatpak-entrypoint"]

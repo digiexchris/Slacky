@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Slacky
+Comment=Slack wrapper for Linux ARM64 systems
+Exec=slacky %U
+Icon=com.andersonlaverde.slacky
+Type=Application
+Terminal=false
+Categories=Network;InstantMessaging;
+MimeType=x-scheme-handler/slack;
+StartupWMClass=Slacky
+StartupNotify=true
